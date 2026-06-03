@@ -876,3 +876,60 @@ body {
   text-align: right;
 }
 
+/* === ANIMATIONS === */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.modal:not(.hidden) {
+  animation: modalIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+
+.modal-overlay:not(.hidden) {
+  animation: fadeIn 0.2s ease both;
+}
+
+.autocomplete-dropdown:not(.hidden) {
+  animation: dropdownIn 0.15s ease both;
+}
+
+/* === UTILITY === */
+.hidden {
+  display: none !important;
+}

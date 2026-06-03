@@ -42,6 +42,98 @@ function removeIngredient(ingredient) {
 
 addBtn.addEventListener("click", addIngredient);
 
+// === AUTOCOMPLETE ===
+
+const dropdown = document.getElementById("autocomplete-dropdown");
+let selectedIndex = -1;
+let debounceTimer = null;
+
+input.addEventListener("input", () => {
+  clearTimeout(debounceTimer);
+  const query = input.value.trim();
+
+  if (query.length < 2) {
+    closeDropdown();
+    return;
+  }
+
+  // Debounce: wait 300ms after user stops typing before calling API
+  debounceTimer = setTimeout(async () => {
+    const results = await searchIngredients(query);
+
+    if (results.length === 0) {
+      closeDropdown();
+      return;
+    }
+
+    renderDropdown(results.slice(0, 8));
+  }, 300);
+});
+
+function renderDropdown(ingredients) {
+  dropdown.innerHTML = "";
+  selectedIndex = -1;
+  dropdown.classList.remove("hidden");
+
+  ingredients.forEach((ing, index) => {
+    const li = document.createElement("li");
+    li.className = "autocomplete-item";
+    li.textContent = ing.strIngredient;
+
+    li.addEventListener("mousedown", (e) => {
+      // mousedown fires before blur so we can catch the click
+      e.preventDefault();
+      selectIngredient(ing.strIngredient);
+    });
+
+    dropdown.appendChild(li);
+  });
+}
+
+function selectIngredient(name) {
+  input.value = name;
+  addIngredient();
+  closeDropdown();
+}
+
+function closeDropdown() {
+  dropdown.classList.add("hidden");
+  dropdown.innerHTML = "";
+  selectedIndex = -1;
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+    closeDropdown();
+  }
+});
+
+// Keyboard navigation in dropdown
+input.addEventListener("keydown", (e) => {
+  const items = dropdown.querySelectorAll(".autocomplete-item");
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+    updateSelected(items);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    selectedIndex = Math.max(selectedIndex - 1, 0);
+    updateSelected(items);
+  } else if (e.key === "Enter" && selectedIndex >= 0) {
+    e.preventDefault();
+    selectIngredient(items[selectedIndex].textContent);
+  } else if (e.key === "Escape") {
+    closeDropdown();
+  }
+});
+
+function updateSelected(items) {
+  items.forEach((item, i) => {
+    item.classList.toggle("selected", i === selectedIndex);
+  });
+}
 
 // === SEARCH RECIPES ===
 
